@@ -6,9 +6,9 @@ import "rxjs/add/operator/map";
     selector: 'smart-table',
     template: `
         <div class="tools v-mid-box">
-            <div class="btn" (click)="add($event)">添加</div>
-            <div class="btn" (click)="modify($event)">修改</div>
-            <div class="btn" (click)="deleteA($event)">删除</div>
+            <div class="btn" [class.disabled]="template.saveUrl===null" (click)="add($event)">添加</div>
+            <div class="btn" [class.disabled]="template.saveUrl===null" (click)="modify($event)">修改</div>
+            <div class="btn" [class.disabled]="template.deleteUrl===null" (click)="deleteA($event)">删除</div>
         </div>
 
         <table>
@@ -21,7 +21,7 @@ import "rxjs/add/operator/map";
             <tbody>
             <tr *ngFor="let row of data;let index = index;">
                 <td><input type="checkbox" [(ngModel)]="dataCheck[index]" (change)="dataCheckInRowChange($event)"></td>
-                <td *ngFor="let col of template.cols" [style.maxWidth]="col.width || 'auto'">{{row[col.name]}}</td>
+                <td *ngFor="let col of template.cols" [style.maxWidth]="col.width || 'auto'">{{process(row[col.name], col)}}</td>
             </tr>
             </tbody>
         </table>
@@ -70,6 +70,16 @@ import "rxjs/add/operator/map";
             border: solid 1px #dddddd;
             margin-left: 1em;
             cursor: default;
+        }
+        
+        .btn.disabled {
+            color: #999999;
+        }
+
+        .btn.disabled:hover {
+            color: #999999;
+            text-shadow: none;
+            background-image: none;
         }
 
         .btn:hover {
@@ -240,6 +250,16 @@ export class SmartTableComponent implements OnInit {
 
                 self.data = ret.body;
             });
+
+
+    }
+
+    process(value, col) {
+        if (col.inplaceCategory) {
+            return col.inplaceCategory[value];
+        }
+
+        return value;
     }
 
     callEditor() {
@@ -265,11 +285,19 @@ export class SmartTableComponent implements OnInit {
     }
 
     add(e) {
+        if (this.template.saveUrl === null) {
+            return;
+        }
+
         this.editor = [];
         this.callEditor();
     }
 
     modify(e) {
+        if (this.template.saveUrl === null) {
+            return;
+        }
+
         let rowId = this.dataCheck.reduce((p, v, i) => {
             if (p < 0 && v) {
                 return i;
@@ -289,6 +317,10 @@ export class SmartTableComponent implements OnInit {
     }
 
     deleteA() {
+        if (this.template.deleteUrl === null) {
+            return;
+        }
+
         const deleteIds = [];
         this.dataCheck.forEach((check, index) => {
             if (check) {
