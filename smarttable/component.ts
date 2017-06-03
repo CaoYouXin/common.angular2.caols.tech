@@ -36,7 +36,7 @@ import "rxjs/add/operator/map";
                 <tr *ngFor="let col of template.cols;let index = index;">
                     <td>{{col.text}}</td>
                     <td><input [id]="col.name" [(ngModel)]="editor[index]" (focus)="editorFocus(col, $event)"
-                               (change)="editorChange(index, $event)" [disabled]="col.disabled" [type]="col.type"></td>
+                               (change)="editorChange(index, col, $event)" [disabled]="col.disabled" [type]="col.type"></td>
                 </tr>
                 </tbody>
             </table>
@@ -386,8 +386,10 @@ export class SmartTableComponent implements OnInit {
         }
     }
 
-    editorChange(i, e) {
-        this.editor[i] = e.target.checked;
+    editorChange(i, col, e) {
+        if (col.type === 'checkbox') {
+            this.editor[i] = e.target.checked;
+        }
     }
 
     combo(col) {
