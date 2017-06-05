@@ -311,6 +311,10 @@ export class SmartTableComponent implements OnInit {
 
         this.template.cols.forEach((col, index) => {
             this.editor[index] = this.data[rowId][col.name];
+
+            if (col.prefix) {
+                this.editor[index] = this.editor[index].substr(col.prefix.length);
+            }
         });
 
         this.callEditor();
