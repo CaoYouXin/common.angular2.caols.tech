@@ -21,7 +21,9 @@ import "rxjs/add/operator/map";
             <tbody>
             <tr *ngFor="let row of data;let index = index;">
                 <td><input type="checkbox" [(ngModel)]="dataCheck[index]" (change)="dataCheckInRowChange($event)"></td>
-                <td *ngFor="let col of template.cols" [style.maxWidth]="col.width || 'auto'">{{process(row[col.name], col)}}</td>
+                <td *ngFor="let col of template.cols" [style.maxWidth]="col.width || 'auto'">
+                    <div [title]="process(row[col.name], col)">{{process(row[col.name], col)}}</div>
+                </td>
             </tr>
             </tbody>
         </table>
