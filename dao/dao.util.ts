@@ -7,17 +7,32 @@ export class DaoUtil {
 
   constructor(private http: Http) { }
 
-  get(url: string): Observable<Response> {
-    return this.http.get(url, { headers: DaoUtil.getHeaders() });
+  get(url: string, headers: any = {}): Observable<Response> {
+    return this.http.get(url, { headers: DaoUtil.getHeaders(headers) });
   }
 
-  post(url: string, data: any): Observable<Response> {
-    return this.http.post(url, data, { headers: DaoUtil.getHeaders() });
+  post(url: string, data: any, headers: any = {}): Observable<Response> {
+    return this.http.post(url, data, { headers: DaoUtil.getHeaders(headers) });
   }
 
-  private static getHeaders(): Headers {
+  private static getHeaders(userset: any = {}): Headers {
     let headers = new Headers();
-    headers.append('Access-Control-Allow-Origin', `http://${document.domain}:${location.port}`);
+    // headers.append('Access-Control-Allow-Origin', `http://${document.domain}:${location.port}`);
+
+    for (var key in userset) {
+      if (userset.hasOwnProperty(key)) {
+        var element = userset[key];
+        headers.append(key, element);
+      }
+    }
+
+    if (!userset['infinitely-serve-token']) {
+      let token = localStorage.getItem('currentUser');
+      if (token) {
+        headers.append('infinitely-serve-token', token);
+      }
+    }
+
     headers.append('Accept', 'application/json');
     return headers;
   }
