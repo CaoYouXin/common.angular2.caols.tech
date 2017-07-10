@@ -7,8 +7,16 @@ export class DaoUtil {
 
   constructor(private http: Http) { }
 
+  getJSON(url: string, header: any = {}): Observable<any> {
+    return this.get(url, header).map(res => res.json()).map(ret => DaoUtil.checkCode(ret));
+  }
+
   get(url: string, headers: any = {}): Observable<Response> {
     return this.http.get(url, { headers: DaoUtil.getHeaders(headers) });
+  }
+
+  postJSON(url: string, data: any, headers: any = {}): Observable<any> {
+    return this.post(url, data, headers).map(res => res.json()).map(ret => DaoUtil.checkCode(ret));
   }
 
   post(url: string, data: any, headers: any = {}): Observable<Response> {
