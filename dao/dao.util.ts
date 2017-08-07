@@ -8,7 +8,7 @@ export class DaoUtil {
   constructor(private http: Http) { }
 
   getJSON(url: string, header: any = {}): Observable<any> {
-    return this.get(url, header).map(res => res.json()).map(ret => DaoUtil.checkCode(ret));
+    return this.get(url, header).map(res => res.json());
   }
 
   get(url: string, headers: any = {}): Observable<Response> {
@@ -16,7 +16,7 @@ export class DaoUtil {
   }
 
   postJSON(url: string, data: any, headers: any = {}): Observable<any> {
-    return this.post(url, data, headers).map(res => res.json()).map(ret => DaoUtil.checkCode(ret));
+    return this.post(url, data, headers).map(res => res.json());
   }
 
   post(url: string, data: any, headers: any = {}): Observable<Response> {
@@ -49,11 +49,4 @@ export class DaoUtil {
     console.log('sth wrong when fetching data. ' + err);
   }
 
-  static checkCode(ret) {
-    if (ret.code !== 20000) {
-      alert(ret.body);
-      return null;
-    }
-    return ret.body;
-  }
 }
